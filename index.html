@@ -2,58 +2,144 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>Ro'yxatdan O'tish</title>
+  <title>Konferensiya Boshqaruv Paneli</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="bg-gray-100 p-6 flex justify-center">
-  <div class="max-w-md w-full bg-white rounded-xl shadow-md p-6 space-y-4">
-    <h2 class="text-xl font-bold text-center text-indigo-600">Konferensiya Ro'yxatdan O'tish</h2>
-    
-    <div id="alert" class="hidden p-3 rounded text-sm"></div>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8">
 
-    <form onsubmit="saveData(event)" class="space-y-3">
-      <div>
-        <label class="block text-sm font-medium">F.I.Sh.:</label>
-        <input type="text" id="fullname" required class="w-full border p-2 rounded">
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Header -->
+    <div class="bg-indigo-700 text-white p-6 rounded-2xl shadow-lg text-center">
+      <h1 class="text-3xl font-bold">Talabalarning Ilmiy-Amaliy Konferensiyasi</h1>
+      <p class="text-indigo-200 mt-1">Qatnashchilarni ro'yxatdan o'tkazish va boshqarish paneli</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Forma qismi (Chap tomonda) -->
+      <div class="bg-white rounded-2xl shadow-xl p-6 h-fit">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-indigo-600"></i> Yangi qatnashchi qo'shish
+        </h2>
+        
+        <div id="alert" class="hidden p-3 rounded mb-4 text-sm font-medium"></div>
+
+        <form onsubmit="saveData(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">F.I.Sh.:</label>
+            <input type="text" id="fullname" required placeholder="Masalan: Aliyev Vali" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Guruh / Kurs:</label>
+            <input type="text" id="group" required placeholder="Masalan: 310-21 DI" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Yo'nalishi:</label>
+            <select id="direction" required class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+              <option value="">-- Yo'nalishni tanlang --</option>
+              <option value="Dasturiy injiniring">Dasturiy injiniring</option>
+              <option value="Axborot xavfsizligi">Axborot xavfsizligi</option>
+              <option value="Sun'iy intellekt">Sun'iy intellekt</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">E-pochta:</label>
+            <input type="email" id="email" required placeholder="email@domain.com" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Telefon:</label>
+            <input type="text" id="phone" required placeholder="+998 90 123 45 67" class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Ma'ruza mavzusi:</label>
+            <textarea id="topic" rows="2" required placeholder="Mavzu nomi..." class="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+          </div>
+          <button type="submit" id="btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow transition flex items-center justify-center gap-2">
+            <span>Saqlash</span>
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
       </div>
-      <div>
-        <label class="block text-sm font-medium">Guruh / Kurs:</label>
-        <input type="text" id="group" required class="w-full border p-2 rounded">
+
+      <!-- Ro'yxat / Jadval qismi (O'ng tomonda) -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <i class="fa-solid fa-users text-indigo-600"></i> Ro'yxatdan o'tganlar bazasi
+          </h2>
+          <button onclick="loadParticipants()" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center gap-1 bg-indigo-50 px-3 py-1.5 rounded-lg transition">
+            <i class="fa-solid fa-rotate-right"></i> Yangilash
+          </button>
+        </div>
+
+        <div class="overflow-x-auto flex-grow border border-gray-200 rounded-xl">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-indigo-50 text-indigo-900 text-xs uppercase tracking-wider font-semibold">
+                <th class="p-3">F.I.Sh. / Guruh</th>
+                <th class="p-3">Yo'nalish va Mavzu</th>
+                <th class="p-3">Aloqa</th>
+                <th class="p-3">Vaqti</th>
+              </tr>
+            </thead>
+            <tbody id="participantsTable" class="divide-y divide-gray-200 text-sm text-gray-700">
+              <tr>
+                <td colspan="4" class="p-6 text-center text-gray-500">Ma'lumotlar yuklanmoqda...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div>
-        <label class="block text-sm font-medium">Yo'nalishi:</label>
-        <select id="direction" required class="w-full border p-2 rounded">
-          <option value="">Yuklanmoqda...</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium">E-pochta:</label>
-        <input type="email" id="email" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Telefon:</label>
-        <input type="text" id="phone" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Ma'ruza mavzusi:</label>
-        <textarea id="topic" required class="w-full border p-2 rounded"></textarea>
-      </div>
-      <button type="submit" id="btn" class="w-full bg-indigo-600 text-white py-2 rounded font-semibold">Saqlash</button>
-    </form>
+
+    </div>
   </div>
 
   <script>
     window.onload = function() {
-      google.script.run.withSuccessHandler(function(dirs) {
-        let select = document.getElementById('direction');
-        select.innerHTML = '<option value="">-- Tanlang --</option>';
-        dirs.forEach(d => select.innerHTML += `<option value="${d}">${d}</option>`);
-      }).getDirections();
+      loadParticipants();
     };
+
+    function loadParticipants() {
+      google.script.run.withSuccessHandler(function(list) {
+        let tbody = document.getElementById('participantsTable');
+        if (!list || list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500">Hozircha ro'yxatdan o'tganlar yo'q.</td></tr>`;
+          return;
+        }
+        
+        tbody.innerHTML = '';
+        list.forEach(p => {
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3">
+                <div class="font-bold text-gray-900">${p.fullname}</div>
+                <div class="text-xs text-indigo-600 font-medium">${p.group}</div>
+              </td>
+              <td class="p-3">
+                <div class="font-semibold text-gray-800 text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded w-fit mb-1">${p.direction}</div>
+                <div class="text-gray-600 text-xs italic">${p.topic}</div>
+              </td>
+              <td class="p-3 text-xs">
+                <div><i class="fa-solid fa-envelope text-gray-400"></i> ${p.email}</div>
+                <div class="mt-0.5"><i class="fa-solid fa-phone text-gray-400"></i> ${p.phone}</div>
+              </td>
+              <td class="p-3 text-xs text-gray-500 whitespace-nowrap">
+                ${p.time}
+              </td>
+            </tr>
+          `;
+        });
+      }).getParticipants();
+    }
 
     function saveData(e) {
       e.preventDefault();
-      document.getElementById('btn').disabled = true;
+      let btn = document.getElementById('btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saqlanmoqda...';
+
       let data = {
         fullname: document.getElementById('fullname').value,
         group: document.getElementById('group').value,
@@ -62,12 +148,20 @@
         phone: document.getElementById('phone').value,
         topic: document.getElementById('topic').value
       };
+
       google.script.run.withSuccessHandler(function(res) {
-        document.getElementById('btn').disabled = false;
+        btn.disabled = false;
+        btn.innerHTML = '<span>Saqlash</span> <i class="fa-solid fa-paper-plane"></i>';
+        
         let alert = document.getElementById('alert');
         alert.classList.remove('hidden');
         alert.innerText = res.message;
-        alert.className = res.success ? 'p-3 bg-green-100 text-green-700 rounded' : 'p-3 bg-red-100 text-red-700 rounded';
+        alert.className = res.success ? 'p-3 rounded mb-4 text-sm font-medium bg-green-100 text-green-800' : 'p-3 rounded mb-4 text-sm font-medium bg-red-100 text-red-800';
+
+        if(res.success) {
+          document.querySelector('form').reset();
+          loadParticipants();
+        }
       }).addParticipant(data);
     }
   </script>
